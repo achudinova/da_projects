@@ -1,8 +1,10 @@
 # SQL-EX.RU exercises
 ## Databases description 
-[Link](https://www.sql-ex.ru/help/select13.php#db_3)
+[Link to Appendix 1. About educational databases](https://www.sql-ex.ru/help/select13.php#db_3)
 
 ### 1. Computer firm
+![image](https://user-images.githubusercontent.com/85280942/130974674-cea0b26c-1709-4820-b476-eee77ea0a78d.png)
+
 The database scheme consists of four tables:
 - **Product** (maker, model, type)
 - **PC** (code, model, speed, ram, hd, cd, price)
@@ -17,7 +19,105 @@ The **Laptop** table is similar to the PC table, except that instead of the CD-R
 
 For each printer model in the **Printer** table, its output type (‘y’ for color and ‘n’ for monochrome) – color field, printing technology ('Laser', 'Jet', or 'Matrix') – type, and price are specified.
 
-![image](https://user-images.githubusercontent.com/85280942/130974674-cea0b26c-1709-4820-b476-eee77ea0a78d.png)
+### 2. Recycling firm
+![image](https://www.sql-ex.ru/images/income.gif)
+
+The firm owns several buy-back centers for collection of recyclable materials. Each of them receives funds to be paid to the recyclables suppliers. 
+
+Data on funds received is recorded in the table
+- **Income_o** (point, date, inc)
+
+The primary key is (point, date), where point holds the identifier of the buy-back center, and date corresponds to the calendar date the funds were received. 
+The date column doesn’t include the time part, thus, money (inc) arrives no more than once a day for each center. 
+
+Information on payments to the recyclables suppliers is held in the table 
+- **Outcome_o** (point, date, out)
+
+In this table, the primary key (point, date) ensures each buy-back center reports about payments (out) no more than once a day, too.
+
+For the case income and expenditure may occur more than once a day, another database schema with tables having a primary key consisting of the single column code is used:
+
+- **Income** (code, point, date, inc)
+- **Outcome** (code, point, date, out)
+
+Here, the date column doesn’t include the time part, either.
+
+### 3. Ships
+![image](https://www.sql-ex.ru/images/ships.gif)
+
+The database of naval ships that took part in World War II is under consideration. 
+
+The database consists of the following relations:
+ - **Classes** (class, type, country, numGuns, bore, displacement)
+ - **Ships** (name, class, launched)
+ - **Battles** (name, date)
+ - **Outcomes** (ship, battle, result)
+
+Ships in classes all have the same general design.<br>
+A class is normally assigned either the name of the first ship built according to the corresponding design, or a name that is different from any ship name in the database. The ship whose name is assigned to a class is called a lead ship.
+
+The **Classes** relation includes the name of the class, type (can be either bb for a battle ship, or bc for a battle cruiser), country the ship was built in, the number of main guns, gun caliber (bore diameter in inches), and displacement (weight in tons). 
+
+The **Ships** relation holds information about the ship name, the name of its corresponding class, and the year the ship was launched. 
+
+The **Battles** relation contains names and dates of battles the ships participated in. 
+
+The **Outcomes** relation - the battle result for a given ship (may be sunk, damaged, or OK, the last value meaning the ship survived the battle unharmed).
+
+Notes: 
+ 1. The Outcomes relation may contain ships not present in the Ships relation.
+ 2. A ship sunk can’t participate in later battles. 
+ 3. For historical reasons, lead ships are referred to as head ships in many exercises.
+ 4. A ship found in the Outcomes table but not in the Ships table is still considered in the database. This is true even if it is sunk.
+
+### 4. Airport
+![image](https://www.sql-ex.ru/images/aero.gif)
+
+The database schema consists of 4 tables:
+ - **Company** (ID_comp, name)
+ - **Trip** (trip_no, id_comp, plane, town_from, town_to, time_out, time_in)
+ - **Passenger** (ID_psg, name)
+ - **Pass_in_trip** (trip_no, date, ID_psg, place)
+
+The **Company** table contains IDs and names of the airlines transporting passengers. 
+
+The **Trip** table contains information on the schedule of flights: trip (flight) number, company (airline) ID, plane type, departure city, destination city, departure time, and arrival time. 
+
+The **Passenger** table holds IDs and names of the passengers. The Pass_in_trip table contains data on flight bookings: trip number, departure date (day), passenger ID and her seat (place) designation during the flight. 
+
+It should be noted that
+- scheduled flights are operated daily; the duration of any flight is less than 24 hours; town_from <> town_to;
+- all time and date values are assumed to belong to the same time zone;
+- departure and arrival times are specified with one minute precision;
+- there can be several passengers bearing the same first name and surname (for example, Bruce Willis);
+- the seat (place) designation consists of a number followed by a letter; the number stands for the row, while the letter (a – d) defines the seat position in the grid (from left to right, in alphabetical order;
+- connections and constraints are shown in the database schema below.
+
+### 5. Painting
+![image](https://www.sql-ex.ru/images/painting.gif)
+
+The database schema consists of 3 tables:
+
+ - **utQ** (Q_ID int, Q_NAME varchar(35)) 
+ - **utV** (V_ID int, V_NAME varchar(35), V_COLOR char(1))
+ - **utB** (B_DATETIME datetime, B_Q_ID int, B_V_ID int, B_VOL tinyint)
+
+The **utQ** table contains the identifiers and names of squares, the initial color of which is black. (Note: black is not a color and is considered unpainted. Only Red, Green and Blue are colors.)
+
+The **utV** table contains the identifiers and names of spray cans and the color of paint they are filled with.
+
+The **utB** table holds information on squares being spray-painted, and contains the time of the painting event, the square and spray can identifiers, the quantity of paint being applied.
+
+It should be noted that
+- a spray can may contain paint of one of three colors: red (V_COLOR='R'), green (V_COLOR='G'), or blue (V_COLOR='B');
+- any spray can initially contains 255 units of paint;
+- the square color is defined in accordance with the RGB model, i.e. R=0, G=0, B=0 is black, whereas R=255, G=255, B=255 is white;
+- any record in the utB table decreases the paint quantity in the corresponding spray can by B_VOL and accordingly increases the amount of paint applied to the square by the same value;
+- B_VOL must be greater than 0 and less or equal to 255;
+- the paint quantity of a single color applied to one square can’t exceed 255, and there can’t be a less than zero amount of paint in a spray can;
+- the time of the painting event (B_DATETIME) is specified with one second precision, i.e. it does not contain milliseconds;
+- for historical reasons, the spray cans are referred to as “balloons” by many of the exercises, and the utV table contains spray can names (V_NAME column) such as “Balloon # 01”, etc.
+
 
 
 ## Solutions
@@ -332,19 +432,59 @@ WHERE price < 500
 ### Task 51
 
 ``` sql
+WITH a AS 
+(SELECT 
+    name AS ship, 
+    numGuns, 
+    displacement
+FROM classes c
+JOIN ships s
+    ON s.class = c.class
 
+UNION
+SELECT 
+    ship AS ship, 
+    numGuns, 
+    displacement
+FROM outcomes o
+JOIN classes c
+    ON o.ship = c.class)
+
+select 
+    a.ship
+from a
+join 
+    (select 
+        DISPLACEMENT, 
+        max(NUMGUNS) maxng
+    from a
+    group by DISPLACEMENT) b
+on a.DISPLACEMENT = b.DISPLACEMENT 
+    and a.numGuns = b.maxng
 ```
 
 ### Task 52
 
 ``` sql
-
+select
+    s.name
+from ships s
+join classes c 
+    on c.class = s.class
+where (c.country = 'Japan' or c.country is null)
+    and (c.type = 'bb' or c.type is null)
+    and (c.numguns >= 9 or c.numguns is null)
+    and (c.bore < 19 or c.bore is null)
+    and (c.displacement <= 65000 or c.displacement  is null)
 ```
 
 ### Task 53
 
 ``` sql
-
+select 
+    round(avg(numGuns),2) avg_numguns
+from classes c
+where c.type = 'bb'
 ```
 
 ### Task 54
