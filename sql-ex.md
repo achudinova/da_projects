@@ -193,92 +193,191 @@ WHERE price < 500
 
 ### Task 2
 
-``` sql
+List all printer makers. Result set: maker.
 
+``` sql
+SELECT DISTINCT MAKER FROM Product
+WHERE type='Printer'
 ```
 
 ### Task 3
 
-``` sql
+Find the model number, RAM and screen size of the laptops with prices over $1000.
 
+``` sql
+SELECT model,ram,screen FROM Laptop
+WHERE price >1000
 ```
 
 ### Task 4
 
-``` sql
+Find all records from the Printer table containing data about color printers.
 
+``` sql
+SELECT * FROM PRINTER
+WHERE color ='Y'
 ```
 
 ### Task 5
 
-``` sql
+Find the model number, speed and hard drive capacity of PCs cheaper than $600 having a 12x or a 24x CD drive.
 
+``` sql
+SELECT MODEL,SPEED,HD 
+FROM PC
+WHERE (CD='12x' OR CD='24x')
+AND PRICE<600
 ```
 
 ### Task 6
 
+For each maker producing laptops with a hard drive capacity of 10 Gb or higher, find the speed of such laptops. Result set: maker, speed.
+
 ``` sql
+SELECT DISTINCT Product.maker, Laptop.speed
+FROM 
+Product INNER JOIN laptop ON Laptop.model = Product.model 
+WHERE (Laptop.hd >= 10) AND PRODUCT.TYPE='laptop'
 
 ```
 
 ### Task 7
 
+Get the models and prices for all commercially available products (of any type) produced by maker B.
+
 ``` sql
+SELECT  PC.model, price
+FROM PC INNER JOIN   
+     Product ON PC.model = Product.model
+     where Product.maker='b'
+   
+UNION
+SELECT Laptop.model, price 
+FROM Laptop INNER JOIN   
+     Product ON Laptop.model = Product.model
+     where Product.maker='b'
+UNION
+
+SELECT printer.model, price 
+FROM printer INNER JOIN   
+     Product ON printer.model = Product.model
+     where Product.maker='b'
 
 ```
 
 ### Task 8
 
-``` sql
+Find the makers producing PCs but not laptops.
 
+``` sql
+select maker 
+from Product
+where product.type in ('PC','Laptop')
+
+except
+
+select maker 
+from Product
+where product.type='laptop'
 ```
 
 ### Task 9
 
-``` sql
+Find the makers of PCs with a processor speed of 450 MHz or more. Result set: maker.
 
+``` sql
+select distinct product.maker 
+from Product 
+join PC ON PC.model = Product.model 
+where (PC.speed >= 450)
 ```
 
 ### Task 10
 
-``` sql
+Find the printer models having the highest price. Result set: model, price.
 
+``` sql
+select distinct model, price 
+from printer 
+where price = (Select max(price) from printer)
 ```
 
 ### Task 11
 
-``` sql
+Find out the average speed of PCs.
 
+``` sql
+select avg (speed) as AVG_Speed 
+from pc
 ```
 
 ### Task 12
 
-``` sql
+Find out the average speed of the laptops priced over $1000.
 
+``` sql
+select avg(speed) as avg_speed 
+from laptop
+where price > 1000
 ```
 
 ### Task 13
 
-``` sql
+Find out the average speed of the PCs produced by maker A.
 
+``` sql
+select avg(pc.speed) as avg_speed 
+from pc
+join product 
+on product.model = pc.model
+where product.maker='A'
 ```
 
 ### Task 14
 
-``` sql
+For the ships in the Ships table that have at least 10 guns, get the class, name, and country.
 
+``` sql
+select 
+    s.class, 
+    s.name, 
+    c.country 
+from ships s
+join classes c on s.class = c.class
+where numguns > 9
 ```
 
 ### Task 15
 
-``` sql
+Get hard drive capacities that are identical for two or more PCs.
+Result set: hd.
 
+``` sql
+select distinct hd 
+from pc
+where exists (  select 'x' 
+                from pc p
+                where p.code <> pc.code
+                and p.hd = pc.hd)
 ```
 
 ### Task 16
 
-``` sql
+Get pairs of PC models with identical speeds and the same RAM capacity. Each resulting pair should be displayed only once, i.e. (i, j) but not (j, i).
+Result set: model with the bigger number, model with the smaller number, speed, and RAM.
 
+! doesn't work with ORACLE
+
+``` sql
+SELECT distinct 
+    pc1.model as model1, 
+    pc2.model as model2, 
+    pc1.speed, 
+    pc1.ram
+FROM pc AS pc1, pc AS pc2
+WHERE pc1.model > pc2.model 
+    AND pc1.speed = pc2.speed 
+    AND pc1.ram = pc2.ram
 ```
 
 ### Task 17
@@ -548,7 +647,25 @@ where c.type = 'bb'
 With a precision of two decimal places, determine the average number of guns for all battleships (including the ones in the Outcomes table).
 
 ``` sql
-
+select round(avg(numguns),2) 
+from
+    (select
+        s.name, 
+        c.numguns, 
+        c.type
+    from ships s 
+    join classes c on s.class = c.class
+    
+    union
+    
+    select 
+        o.ship, 
+        c.numguns, 
+        c.type
+    from outcomes o
+    join classes c on c.class = o.ship
+    where o.ship not in (select name from ships) ) t
+where type = 'bb'
 ```
 
 ### Task 55
@@ -558,13 +675,36 @@ If the lead ship’s year of launch is not known, get the minimum year of launch
 Result set: class, year.
 
 ``` sql
-
+select 
+    c.class,
+    min(s.launched)
+from classes c 
+left join ships s
+    on c.class = s.class
+group by c.class
 ```
 
 ### Task 56
 
-``` sql
+For each class, find out the number of ships of this class that were sunk in battles.
+Result set: class, number of ships sunk.
 
+``` sql
+with sun as (
+select
+nvl(s.class, o.ship) as class,
+count(*) sunks
+from outcomes o
+left join ships s on o.ship = s.name
+where result = 'sunk'
+group by nvl(s.class, o.ship))
+
+select 
+c.class,
+nvl(s.sunks,0) sunks
+from classes c 
+left join sun s
+on c.class = s.class
 ```
 
 ### Task 57
