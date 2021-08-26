@@ -70,6 +70,62 @@ Notes:
  3. For historical reasons, lead ships are referred to as head ships in many exercises.
  4. A ship found in the Outcomes table but not in the Ships table is still considered in the database. This is true even if it is sunk.
 
+CLASS	        |TYPE	|COUNTRY    |NUMGUNS    |BORE   |DISPLACEMENT
+----------------|-------|-----------|-----------|-------|--------
+Bismarck        |bb     |Germany    |8	        |15	    |42000
+Iowa            |bb     |USA	    |9	        |16	    |46000
+Kongo	        |bc     |Japan      |8	        |14	    |32000
+North Carolina	|bb     |USA	    |12	        |16	    |37000
+Renown	        |bc	    |Gt.Britain	|6	        |15	    |32000
+Revenge	        |bb	    |Gt.Britain	|8	        |15	    |29000
+Tennessee	    |bb	    |USA	    |12	        |14	    |32000
+Yamato	        |bb     |Japan	    |9          |18	    |65000
+
+NAME			|CLASS			|LAUNCHED
+----------------|---------------|--------
+California		|Tennessee		|1921
+Haruna			|Kongo			|1916
+Hiei			|Kongo			|1914
+Iowa			|Iowa			|1943
+Kirishima		|Kongo			|1915
+Kongo			|Kongo			|1913
+Missouri		|Iowa			|1944
+Musashi			|Yamato			|1942
+New Jersey		|Iowa			|1943
+North Carolina	|North Carolina	|1941
+Ramillies		|Revenge		|1917
+Renown			|Renown			|1916
+Repulse			|Renown			|1916
+Resolution		|Renown			|1916
+Revenge			|Revenge		|1916
+Royal Oak		|Revenge		|1916
+Royal Sovereign	|Revenge		|1916
+Tennessee		|Tennessee		|1920
+Washington		|North Carolina	|1941
+Wisconsin		|Iowa			|1944
+Yamato			|Yamato			|1941
+South Dakota	|North Carolina	|1941
+
+
+SHIP			|BATTLE			|RESULT
+----------------|---------------|--------
+Bismarck		|North Atlantic	|sunk
+California		|Surigao Strait	|OK
+Duke of York	|North Cape		|OK
+Fuso			|Surigao Strait	|sunk
+Hood			|North Atlantic	|sunk
+King George V	|North Atlantic	|OK
+Kirishima		|Guadalcanal	|sunk
+Prince of Wales	|North Atlantic	|damaged
+Rodney			|North Atlantic	|OK
+Schamhorst		|North Cape		|sunk
+South Dakota	|Guadalcanal	|damaged
+Tennessee		|Surigao Strait	|OK
+Washington		|Guadalcanal	|OK
+West Virginia	|Surigao Strait	|OK
+Yamashiro		|Surigao Strait	|sunk
+California		|Guadalcanal	|damaged
+
 ### 4. Airport
 ![image](https://www.sql-ex.ru/images/aero.gif)
 
@@ -488,6 +544,8 @@ where c.type = 'bb'
 ```
 
 ### Task 54
+
+With a precision of two decimal places, determine the average number of guns for all battleships (including the ones in the Outcomes table).
 
 ``` sql
 
